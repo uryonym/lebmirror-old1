@@ -1,4 +1,3 @@
-import React from 'react'
 import { signInWithRedirect } from 'firebase/auth'
 import { firebaseAuth, googleProvider } from './lib/firebase'
 
