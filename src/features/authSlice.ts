@@ -1,9 +1,8 @@
-import { createAsyncThunk, createSlice, isFulfilled, SerializedError } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, SerializedError } from '@reduxjs/toolkit'
 import { signInWithRedirect, signOut } from 'firebase/auth'
 import { firebaseAuth, googleProvider } from '../lib/firebase'
 import firebase from 'firebase/compat'
 import UserCredential = firebase.auth.UserCredential
-import { act } from 'react-dom/test-utils'
 import { RootState } from '../store'
 
 export interface AuthState {
@@ -27,7 +26,7 @@ interface PayLoad {
 
 export const login = createAsyncThunk<AuthState, PayLoad>('login', async (req, thunkAPI) => {
   try {
-    if (req.displayName === null) {
+    if (req.displayName === undefined) {
       const response: UserCredential = await signInWithRedirect(firebaseAuth, googleProvider)
       const displayName = response.user.displayName
       const email = response.user.email
