@@ -1,5 +1,3 @@
-import { signInWithRedirect } from 'firebase/auth'
-import { firebaseAuth, googleProvider } from '../lib/firebase'
 import { useAppDispatch } from '../store'
 import { login } from '../features/authSlice'
 

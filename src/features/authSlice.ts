@@ -6,6 +6,7 @@ import UserCredential = firebase.auth.UserCredential
 import { RootState } from '../store'
 
 export interface AuthState {
+  uid?: string
   displayName?: string
   email?: string
   authenticated?: boolean
@@ -13,6 +14,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
+  uid: undefined,
   displayName: undefined,
   email: undefined,
   authenticated: undefined,
@@ -20,6 +22,7 @@ const initialState: AuthState = {
 }
 
 interface PayLoad {
+  uid?: string
   displayName?: string
   email?: string
 }
@@ -28,9 +31,10 @@ export const login = createAsyncThunk<AuthState, PayLoad>('login', async (req, t
   try {
     if (req.displayName === undefined) {
       const response: UserCredential = await signInWithRedirect(firebaseAuth, googleProvider)
+      const uid = response.user.uid
       const displayName = response.user.displayName
       const email = response.user.email
-      return { displayName, email } as PayLoad
+      return { uid, displayName, email } as PayLoad
     } else {
       return req
     }
@@ -53,6 +57,7 @@ export const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
+      state.uid = action.payload.uid
       state.displayName = action.payload.displayName
       state.email = action.payload.email
       state.authenticated = true
@@ -62,6 +67,7 @@ export const authSlice = createSlice({
     })
     builder.addCase(logout.fulfilled, (state) => {
       state.authenticated = false
+      state.uid = initialState.uid
       state.displayName = initialState.displayName
       state.email = initialState.email
     })

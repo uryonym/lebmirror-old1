@@ -1,5 +1,5 @@
 import { useAppDispatch, useSelector } from './store'
-import { authSelector, login, logout } from './features/authSlice'
+import { authSelector, login } from './features/authSlice'
 import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Login } from './components/Login'
 import { Home } from './components/Home'
