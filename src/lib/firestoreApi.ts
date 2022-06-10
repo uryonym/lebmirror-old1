@@ -1,19 +1,19 @@
-import firebase from 'firebase/compat'
-import { getDocs, collection, FirestoreDataConverter, DocumentData, QueryDocumentSnapshot, SnapshotOptions, Timestamp } from 'firebase/firestore'
+import {
+  getDocs,
+  collection,
+  FirestoreDataConverter,
+  DocumentData,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+  Timestamp,
+} from 'firebase/firestore'
 import { firebaseDb } from './firebase'
-
-export type FSNote = {
-  id?: string
-  name: string
-  uid: string
-  createdAt: Timestamp
-}
 
 export type Note = {
   id?: string
   name: string
   uid: string
-  createdAt: Date
+  createdAt: Date | Timestamp
 }
 
 const noteConverter: FirestoreDataConverter<Note> = {
@@ -21,16 +21,18 @@ const noteConverter: FirestoreDataConverter<Note> = {
     return {
       name: note.name,
       uid: note.uid,
-      createdAt: Timestamp.fromDate(note.createdAt)
+      createdAt: note.createdAt,
     }
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot<FSNote>, options?: SnapshotOptions): Note {
+  fromFirestore(snapshot: QueryDocumentSnapshot<Note>, options?: SnapshotOptions): Note {
     const data = snapshot.data(options)
-    return {
-      id: snapshot.id,
-      name: data.name,
-      uid: data.uid,
-      createdAt: data.createdAt.toDate(),
+    if (data.createdAt instanceof Timestamp) {
+      return {
+        id: snapshot.id,
+        name: data.name,
+        uid: data.uid,
+        createdAt: data.createdAt.toDate(),
+      }
     }
   },
 }
