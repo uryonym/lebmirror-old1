@@ -25,6 +25,14 @@ export type Section = {
   createdAt: Date | Timestamp
 }
 
+export type Page = {
+  id?: string
+  name: string
+  content: string
+  sectionId: string
+  createdAt: Date | Timestamp
+}
+
 const noteConverter: FirestoreDataConverter<Note> = {
   toFirestore(note: Note): DocumentData {
     return {
@@ -67,6 +75,29 @@ const sectionConverter: FirestoreDataConverter<Section> = {
   },
 }
 
+const pageConverter: FirestoreDataConverter<Page> = {
+  toFirestore(page: Page): DocumentData {
+    return {
+      name: page.name,
+      content: page.content,
+      sectionId: page.sectionId,
+      createdAt: page.createdAt,
+    }
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot<Page>, options?: SnapshotOptions): Page {
+    const data = snapshot.data(options)
+    if (data.createdAt instanceof Timestamp) {
+      return {
+        id: snapshot.id,
+        name: data.name,
+        content: data.content,
+        sectionId: data.sectionId,
+        createdAt: data.createdAt.toDate(),
+      }
+    }
+  },
+}
+
 export const getNotes = async () => {
   const collRef = collection(firebaseDb, 'notes').withConverter(noteConverter)
   const snapShot = await getDocs(collRef)
@@ -76,6 +107,13 @@ export const getNotes = async () => {
 export const getSections = async (noteId: string) => {
   const collRef = collection(firebaseDb, 'sections').withConverter(sectionConverter)
   const q = query(collRef, where('noteId', '==', noteId))
+  const snapShot = await getDocs(q)
+  return snapShot.docs.map((doc) => doc.data())
+}
+
+export const getPages = async (sectionId: string) => {
+  const collRef = collection(firebaseDb, 'pages').withConverter(pageConverter)
+  const q = query(collRef, where('sectionId', '==', sectionId))
   const snapShot = await getDocs(q)
   return snapShot.docs.map((doc) => doc.data())
 }

@@ -37,4 +37,4 @@ export const noteSlice = createSlice({
   },
 })
 
-export const noteSelecter = (state: RootState) => state.note
+export const noteSelector = (state: RootState) => state.note

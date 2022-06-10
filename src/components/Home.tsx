@@ -1,13 +1,15 @@
 import { logout } from '../features/authSlice'
 import { useAppDispatch, useSelector } from '../store'
-import { fetchNotes, noteSelecter } from '../features/noteSlice'
-import { Note, Section } from '../lib/firestoreApi'
-import { fetchSections, sectionSelecter } from '../features/sectionSlice'
+import { fetchNotes, noteSelector } from '../features/noteSlice'
+import { Note, Page, Section } from '../lib/firestoreApi'
+import { fetchSections, sectionSelector } from '../features/sectionSlice'
+import { fetchPages, pageSelector } from '../features/pageSlice'
 
 export const Home = () => {
   const dispatch = useAppDispatch()
-  const { notes } = useSelector(noteSelecter)
-  const { sections } = useSelector(sectionSelecter)
+  const { notes } = useSelector(noteSelector)
+  const { sections } = useSelector(sectionSelector)
+  const { pages } = useSelector(pageSelector)
 
   const handleFetchNotes = () => {
     dispatch(fetchNotes())
@@ -15,6 +17,10 @@ export const Home = () => {
 
   const handleFetchSections = (noteId: string) => {
     dispatch(fetchSections(noteId))
+  }
+
+  const handleFetchPages = (sectionId: string) => {
+    dispatch(fetchPages(sectionId))
   }
 
   const handleLogout = () => {
@@ -41,7 +47,17 @@ export const Home = () => {
       <ul>
         {sections.map((section: Section) => (
           <li key={section.id}>
-            <a href='#'>{section.name}</a>
+            <a href='#' onClick={() => handleFetchPages(section.id)}>
+              {section.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <h2>ページ一覧</h2>
+      <ul>
+        {pages.map((page: Page) => (
+          <li key={page.id}>
+            <a href='#'>{page.name}</a>
           </li>
         ))}
       </ul>

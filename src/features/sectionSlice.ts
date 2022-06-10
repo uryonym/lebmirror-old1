@@ -37,4 +37,4 @@ export const sectionSlice = createSlice({
   },
 })
 
-export const sectionSelecter = (state: RootState) => state.section
+export const sectionSelector = (state: RootState) => state.section
