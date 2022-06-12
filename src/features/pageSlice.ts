@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { addPage, deletePage, getPages, Page } from '../lib/firestoreApi'
+import { addPage, deletePage, getPages, Page, updatePage } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface PageState {
@@ -32,6 +32,15 @@ export const createPage = createAsyncThunk('page/create', async (page: Page, thu
   }
 })
 
+export const changePage = createAsyncThunk('page/change', async (page: Page, thunkAPI) => {
+  try {
+    await updatePage(page)
+    return { page }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ更新（page/change）に失敗しました。\n' + e)
+  }
+})
+
 export const destroyPage = createAsyncThunk('page/destroy', async (pageId: string, thunkAPI) => {
   try {
     await deletePage(pageId)
@@ -60,6 +69,13 @@ export const pageSlice = createSlice({
       return { status: 'idle', pages, currentPage }
     })
     builder.addCase(createPage.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(changePage.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(changePage.fulfilled, (state, action) => {
+      const { page } = action.payload
+      const pages = state.pages.map((x) => (x.id === page.id ? page : x))
+      return { ...state, status: 'idle', pages }
+    })
+    builder.addCase(changePage.rejected, (state) => ({ ...state, status: 'failed' }))
     builder.addCase(destroyPage.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(destroyPage.fulfilled, (state, action) => {
       const { pageId } = action.payload

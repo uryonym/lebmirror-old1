@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addSection, deleteSection, getSections, Section } from '../lib/firestoreApi'
+import { addSection, deleteSection, getSections, Section, updateSection } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface SectionState {
@@ -29,6 +29,15 @@ export const createSection = createAsyncThunk('section/create', async (section: 
     return { currentSection: response }
   } catch (e) {
     return thunkAPI.rejectWithValue('データ作成（section/create）に失敗しました。\n' + e)
+  }
+})
+
+export const changeSection = createAsyncThunk('section/change', async (section: Section, thunkAPI) => {
+  try {
+    await updateSection(section)
+    return { section }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ更新（section/change）に失敗しました。\n' + e)
   }
 })
 
@@ -65,6 +74,13 @@ export const sectionSlice = createSlice({
       return { status: 'idle', sections, currentSection }
     })
     builder.addCase(createSection.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(changeSection.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(changeSection.fulfilled, (state, action) => {
+      const { section } = action.payload
+      const sections = state.sections.map((x) => (x.id === section.id ? section : x))
+      return { ...state, status: 'idle', sections }
+    })
+    builder.addCase(changeSection.rejected, (state) => ({ ...state, status: 'failed' }))
     builder.addCase(destroySection.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(destroySection.fulfilled, (state, action) => {
       const { sectionId } = action.payload
