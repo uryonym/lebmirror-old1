@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { addNote, getNotes, Note } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
@@ -35,7 +35,12 @@ export const createNote = createAsyncThunk('note/create', async (note: Note, thu
 export const noteSlice = createSlice({
   name: 'note',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentNote: (state, action: PayloadAction<string>) => {
+      const currentNote = state.notes.find((x) => x.id === action.payload)
+      return { ...state, currentNote }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchNotes.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(fetchNotes.fulfilled, (state, action) => {
@@ -54,4 +59,5 @@ export const noteSlice = createSlice({
   },
 })
 
+export const { setCurrentNote } = noteSlice.actions
 export const noteSelector = (state: RootState) => state.note

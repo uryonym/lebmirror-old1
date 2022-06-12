@@ -122,8 +122,9 @@ export const getSections = async (noteId: string) => {
 
 export const addSection = async (section: Section) => {
   const collRef = collection(firebaseDb, 'sections').withConverter(sectionConverter)
-  const doc = await addDoc(collRef, section)
-  return doc.id
+  const docRef = await addDoc(collRef, section)
+  const doc = await getDoc(docRef.withConverter(sectionConverter))
+  return doc.data()
 }
 
 export const getPages = async (sectionId: string) => {

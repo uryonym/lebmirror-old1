@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getSections, Section } from '../lib/firestoreApi'
+import { addSection, getSections, Section } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface SectionState {
@@ -23,6 +23,15 @@ export const fetchSections = createAsyncThunk('section/fetch', async (noteId: st
   }
 })
 
+export const createSection = createAsyncThunk('section/create', async (section: Section, thunkAPI) => {
+  try {
+    const response = await addSection(section)
+    return { currentSection: response }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ作成（section/create）に失敗しました。\n' + e)
+  }
+})
+
 export const sectionSlice = createSlice({
   name: 'section',
   initialState,
@@ -34,6 +43,14 @@ export const sectionSlice = createSlice({
       return { ...state, status: 'idle', sections }
     })
     builder.addCase(fetchSections.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(createSection.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(createSection.fulfilled, (state, action) => {
+      const { currentSection } = action.payload
+      const sections = state.sections.concat()
+      sections.push(currentSection)
+      return { status: 'idle', sections, currentSection }
+    })
+    builder.addCase(createSection.rejected, (state) => ({ ...state, status: 'failed' }))
   },
 })
 
