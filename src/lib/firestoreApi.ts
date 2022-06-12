@@ -11,6 +11,7 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions,
   Timestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore'
 import { firebaseDb } from './firebase'
@@ -115,6 +116,11 @@ export const addNote = async (note: Note) => {
   return doc.data()
 }
 
+export const updateNote = async (note: Note) => {
+  const docRef = doc(firebaseDb, 'notes', note.id)
+  await updateDoc(docRef, note)
+}
+
 export const deleteNote = async (noteId: string) => {
   const docRef = doc(firebaseDb, 'notes', noteId)
   await deleteDoc(docRef)
@@ -134,6 +140,11 @@ export const addSection = async (section: Section) => {
   return doc.data()
 }
 
+export const updateSection = async (section: Section) => {
+  const docRef = doc(firebaseDb, 'sections', section.id)
+  await updateDoc(docRef, section)
+}
+
 export const deleteSection = async (sectionId: string) => {
   const docRef = doc(firebaseDb, 'sections', sectionId)
   await deleteDoc(docRef)
@@ -151,6 +162,11 @@ export const addPage = async (page: Page) => {
   const docRef = await addDoc(collRef, page)
   const doc = await getDoc(docRef.withConverter(pageConverter))
   return doc.data()
+}
+
+export const updatePage = async (page: Page) => {
+  const docRef = doc(firebaseDb, 'pages', page.id)
+  await updateDoc(docRef, page)
 }
 
 export const deletePage = async (pageId: string) => {

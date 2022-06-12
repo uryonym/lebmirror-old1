@@ -1,9 +1,9 @@
 import { authSelector, logout } from '../features/authSlice'
 import { useAppDispatch, useSelector } from '../store'
-import { createNote, destroyNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
+import { changeNote, createNote, destroyNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
 import { Note, Page, Section } from '../lib/firestoreApi'
-import { createSection, destroySection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
-import { createPage, destroyPage, fetchPages, pageSelector } from '../features/pageSlice'
+import { changeSection, createSection, destroySection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
+import { changePage, createPage, destroyPage, fetchPages, pageSelector } from '../features/pageSlice'
 import { ChangeEvent, useState } from 'react'
 
 export const Home = () => {
@@ -14,8 +14,11 @@ export const Home = () => {
   const { pages } = useSelector(pageSelector)
 
   const [noteName, setNoteName] = useState('')
+  const [renameNote, setRenameNote] = useState<Note>()
   const [sectionName, setSectionName] = useState('')
+  const [renameSection, setRenameSection] = useState<Section>()
   const [pageName, setPageName] = useState('')
+  const [renamePage, setRenamePage] = useState<Page>()
 
   const handleFetchNotes = () => {
     dispatch(fetchNotes())
@@ -34,9 +37,27 @@ export const Home = () => {
     dispatch(createNote(data))
   }
 
+  const handleInputRenameNote = (e: ChangeEvent<HTMLInputElement>) => {
+    setRenameNote({ ...renameNote, name: e.target.value })
+  }
+
+  const handleRenameNote = () => {
+    dispatch(changeNote(renameNote))
+    setRenameNote(undefined)
+  }
+
+  const handleCancelRenameNote = () => {
+    setRenameNote(undefined)
+  }
+
   const handleSelectNote = (noteId: string) => {
     dispatch(setCurrentNote(noteId))
     dispatch(fetchSections(noteId))
+  }
+
+  const handleUpdateNote = (noteId: string) => {
+    const currentNote = notes.find((x) => x.id === noteId)
+    setRenameNote(currentNote)
   }
 
   const handleDeleteNote = (noteId: string) => {
@@ -56,9 +77,27 @@ export const Home = () => {
     dispatch(createSection(data))
   }
 
+  const handleInputRenameSection = (e: ChangeEvent<HTMLInputElement>) => {
+    setRenameSection({ ...renameSection, name: e.target.value })
+  }
+
+  const handleRenameSection = () => {
+    dispatch(changeSection(renameSection))
+    setRenameSection(undefined)
+  }
+
+  const handleCancelRenameSection = () => {
+    setRenameSection(undefined)
+  }
+
   const handleSelectSection = (sectionId: string) => {
     dispatch(setCurrentSection(sectionId))
     dispatch(fetchPages(sectionId))
+  }
+
+  const handleUpdateSection = (sectionId: string) => {
+    const currentSection = sections.find((x) => x.id === sectionId)
+    setRenameSection(currentSection)
   }
 
   const handleDeleteSection = (sectionId: string) => {
@@ -77,6 +116,24 @@ export const Home = () => {
       createdAt: new Date(),
     }
     dispatch(createPage(data))
+  }
+
+  const handleInputRenamePage = (e: ChangeEvent<HTMLInputElement>) => {
+    setRenamePage({ ...renamePage, name: e.target.value })
+  }
+
+  const handleRenamePage = () => {
+    dispatch(changePage(renamePage))
+    setRenamePage(undefined)
+  }
+
+  const handleCancelRenamePage = () => {
+    setRenamePage(undefined)
+  }
+
+  const handleUpdatePage = (pageId: string) => {
+    const currentPage = pages.find((x) => x.id === pageId)
+    setRenamePage(currentPage)
   }
 
   const handleDeletePage = (pageId: string) => {
@@ -100,12 +157,26 @@ export const Home = () => {
           ノート作成
         </button>
       </div>
+      {renameNote && (
+        <div>
+          <input type='text' value={renameNote.name} onChange={handleInputRenameNote} />
+          <button type='button' onClick={handleRenameNote}>
+            名前を更新
+          </button>
+          <button type='button' onClick={handleCancelRenameNote}>
+            キャンセル
+          </button>
+        </div>
+      )}
       <ul>
         {notes.map((note: Note) => (
           <li key={note.id}>
             <a href='#' onClick={() => handleSelectNote(note.id)}>
               {note.name}
             </a>
+            <button type='button' onClick={() => handleUpdateNote(note.id)}>
+              名前変更
+            </button>
             <button type='button' onClick={() => handleDeleteNote(note.id)}>
               削除
             </button>
@@ -119,12 +190,26 @@ export const Home = () => {
           セクション作成
         </button>
       </div>
+      {renameSection && (
+        <div>
+          <input type='text' value={renameSection.name} onChange={handleInputRenameSection} />
+          <button type='button' onClick={handleRenameSection}>
+            名前を更新
+          </button>
+          <button type='button' onClick={handleCancelRenameSection}>
+            キャンセル
+          </button>
+        </div>
+      )}
       <ul>
         {sections.map((section: Section) => (
           <li key={section.id}>
             <a href='#' onClick={() => handleSelectSection(section.id)}>
               {section.name}
             </a>
+            <button type='button' onClick={() => handleUpdateSection(section.id)}>
+              名前変更
+            </button>
             <button type='button' onClick={() => handleDeleteSection(section.id)}>
               削除
             </button>
@@ -138,10 +223,24 @@ export const Home = () => {
           ページ作成
         </button>
       </div>
+      {renamePage && (
+        <div>
+          <input type='text' value={renamePage.name} onChange={handleInputRenamePage} />
+          <button type='button' onClick={handleRenamePage}>
+            名前を更新
+          </button>
+          <button type='button' onClick={handleCancelRenamePage}>
+            キャンセル
+          </button>
+        </div>
+      )}
       <ul>
         {pages.map((page: Page) => (
           <li key={page.id}>
             <a href='#'>{page.name}</a>
+            <button type='button' onClick={() => handleUpdatePage(page.id)}>
+              名前変更
+            </button>
             <button type='button' onClick={() => handleDeletePage(page.id)}>
               削除
             </button>

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addNote, deleteNote, getNotes, Note } from '../lib/firestoreApi'
+import { addNote, deleteNote, getNotes, Note, updateNote } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface NoteState {
@@ -29,6 +29,15 @@ export const createNote = createAsyncThunk('note/create', async (note: Note, thu
     return { currentNote: response }
   } catch (e) {
     return thunkAPI.rejectWithValue('データ作成（note/create）に失敗しました。\n' + e)
+  }
+})
+
+export const changeNote = createAsyncThunk('note/change', async (note: Note, thunkAPI) => {
+  try {
+    await updateNote(note)
+    return { note }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ更新（note/change）に失敗しました。\n' + e)
   }
 })
 
@@ -65,6 +74,13 @@ export const noteSlice = createSlice({
       return { status: 'idle', notes, currentNote }
     })
     builder.addCase(createNote.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(changeNote.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(changeNote.fulfilled, (state, action) => {
+      const { note } = action.payload
+      const notes = state.notes.map((x) => (x.id === note.id ? note : x))
+      return { ...state, status: 'idle', notes }
+    })
+    builder.addCase(changeNote.rejected, (state) => ({ ...state, status: 'failed' }))
     builder.addCase(destroyNote.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(destroyNote.fulfilled, (state, action) => {
       const { noteId } = action.payload
