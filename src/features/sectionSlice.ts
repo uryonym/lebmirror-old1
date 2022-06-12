@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addSection, getSections, Section } from '../lib/firestoreApi'
+import { addSection, deleteSection, getSections, Section } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface SectionState {
@@ -32,6 +32,15 @@ export const createSection = createAsyncThunk('section/create', async (section: 
   }
 })
 
+export const destroySection = createAsyncThunk('section/destroy', async (sectionId: string, thunkAPI) => {
+  try {
+    await deleteSection(sectionId)
+    return { sectionId }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ削除（section/destroy）に失敗しました。\n' + e)
+  }
+})
+
 export const sectionSlice = createSlice({
   name: 'section',
   initialState,
@@ -56,6 +65,13 @@ export const sectionSlice = createSlice({
       return { status: 'idle', sections, currentSection }
     })
     builder.addCase(createSection.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(destroySection.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(destroySection.fulfilled, (state, action) => {
+      const { sectionId } = action.payload
+      const sections = state.sections.filter((x) => x.id !== sectionId)
+      return { ...state, status: 'idle', sections }
+    })
+    builder.addCase(destroySection.rejected, (state) => ({ ...state, status: 'failed' }))
   },
 })
 

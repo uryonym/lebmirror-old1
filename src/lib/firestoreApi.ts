@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   DocumentData,
   FirestoreDataConverter,
   getDoc,
@@ -113,6 +115,11 @@ export const addNote = async (note: Note) => {
   return doc.data()
 }
 
+export const deleteNote = async (noteId: string) => {
+  const docRef = doc(firebaseDb, 'notes', noteId)
+  await deleteDoc(docRef)
+}
+
 export const getSections = async (noteId: string) => {
   const collRef = collection(firebaseDb, 'sections').withConverter(sectionConverter)
   const q = query(collRef, where('noteId', '==', noteId))
@@ -127,6 +134,11 @@ export const addSection = async (section: Section) => {
   return doc.data()
 }
 
+export const deleteSection = async (sectionId: string) => {
+  const docRef = doc(firebaseDb, 'sections', sectionId)
+  await deleteDoc(docRef)
+}
+
 export const getPages = async (sectionId: string) => {
   const collRef = collection(firebaseDb, 'pages').withConverter(pageConverter)
   const q = query(collRef, where('sectionId', '==', sectionId))
@@ -139,4 +151,9 @@ export const addPage = async (page: Page) => {
   const docRef = await addDoc(collRef, page)
   const doc = await getDoc(docRef.withConverter(pageConverter))
   return doc.data()
+}
+
+export const deletePage = async (pageId: string) => {
+  const docRef = doc(firebaseDb, 'pages', pageId)
+  await deleteDoc(docRef)
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { addPage, getPages, Page } from '../lib/firestoreApi'
+import { addPage, deletePage, getPages, Page } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface PageState {
@@ -32,6 +32,15 @@ export const createPage = createAsyncThunk('page/create', async (page: Page, thu
   }
 })
 
+export const destroyPage = createAsyncThunk('page/destroy', async (pageId: string, thunkAPI) => {
+  try {
+    await deletePage(pageId)
+    return { pageId }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ削除（page/destroy）に失敗しました。\n' + e)
+  }
+})
+
 export const pageSlice = createSlice({
   name: 'page',
   initialState,
@@ -51,6 +60,13 @@ export const pageSlice = createSlice({
       return { status: 'idle', pages, currentPage }
     })
     builder.addCase(createPage.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(destroyPage.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(destroyPage.fulfilled, (state, action) => {
+      const { pageId } = action.payload
+      const pages = state.pages.filter((x) => x.id !== pageId)
+      return { ...state, status: 'idle', pages }
+    })
+    builder.addCase(destroyPage.rejected, (state) => ({ ...state, status: 'failed' }))
   },
 })
 

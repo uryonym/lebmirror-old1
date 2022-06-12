@@ -1,9 +1,9 @@
 import { authSelector, logout } from '../features/authSlice'
 import { useAppDispatch, useSelector } from '../store'
-import { createNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
+import { createNote, destroyNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
 import { Note, Page, Section } from '../lib/firestoreApi'
-import { createSection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
-import { createPage, fetchPages, pageSelector } from '../features/pageSlice'
+import { createSection, destroySection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
+import { createPage, destroyPage, fetchPages, pageSelector } from '../features/pageSlice'
 import { ChangeEvent, useState } from 'react'
 
 export const Home = () => {
@@ -39,6 +39,10 @@ export const Home = () => {
     dispatch(fetchSections(noteId))
   }
 
+  const handleDeleteNote = (noteId: string) => {
+    dispatch(destroyNote(noteId))
+  }
+
   const handleInputSectionName = (e: ChangeEvent<HTMLInputElement>) => {
     setSectionName(e.target.value)
   }
@@ -57,6 +61,10 @@ export const Home = () => {
     dispatch(fetchPages(sectionId))
   }
 
+  const handleDeleteSection = (sectionId: string) => {
+    dispatch(destroySection(sectionId))
+  }
+
   const handleInputPageName = (e: ChangeEvent<HTMLInputElement>) => {
     setPageName(e.target.value)
   }
@@ -69,6 +77,10 @@ export const Home = () => {
       createdAt: new Date(),
     }
     dispatch(createPage(data))
+  }
+
+  const handleDeletePage = (pageId: string) => {
+    dispatch(destroyPage(pageId))
   }
 
   const handleLogout = () => {
@@ -94,6 +106,9 @@ export const Home = () => {
             <a href='#' onClick={() => handleSelectNote(note.id)}>
               {note.name}
             </a>
+            <button type='button' onClick={() => handleDeleteNote(note.id)}>
+              削除
+            </button>
           </li>
         ))}
       </ul>
@@ -110,6 +125,9 @@ export const Home = () => {
             <a href='#' onClick={() => handleSelectSection(section.id)}>
               {section.name}
             </a>
+            <button type='button' onClick={() => handleDeleteSection(section.id)}>
+              削除
+            </button>
           </li>
         ))}
       </ul>
@@ -124,6 +142,9 @@ export const Home = () => {
         {pages.map((page: Page) => (
           <li key={page.id}>
             <a href='#'>{page.name}</a>
+            <button type='button' onClick={() => handleDeletePage(page.id)}>
+              削除
+            </button>
           </li>
         ))}
       </ul>

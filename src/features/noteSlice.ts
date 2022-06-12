@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addNote, getNotes, Note } from '../lib/firestoreApi'
+import { addNote, deleteNote, getNotes, Note } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
 export interface NoteState {
@@ -32,6 +32,15 @@ export const createNote = createAsyncThunk('note/create', async (note: Note, thu
   }
 })
 
+export const destroyNote = createAsyncThunk('note/destroy', async (noteId: string, thunkAPI) => {
+  try {
+    await deleteNote(noteId)
+    return { noteId }
+  } catch (e) {
+    return thunkAPI.rejectWithValue('データ削除（note/destroy）に失敗しました。\n' + e)
+  }
+})
+
 export const noteSlice = createSlice({
   name: 'note',
   initialState,
@@ -56,6 +65,13 @@ export const noteSlice = createSlice({
       return { status: 'idle', notes, currentNote }
     })
     builder.addCase(createNote.rejected, (state) => ({ ...state, status: 'failed' }))
+    builder.addCase(destroyNote.pending, (state) => ({ ...state, status: 'loading' }))
+    builder.addCase(destroyNote.fulfilled, (state, action) => {
+      const { noteId } = action.payload
+      const notes = state.notes.filter((x) => x.id !== noteId)
+      return { ...state, status: 'idle', notes }
+    })
+    builder.addCase(destroyNote.rejected, (state) => ({ ...state, status: 'failed' }))
   },
 })
 
