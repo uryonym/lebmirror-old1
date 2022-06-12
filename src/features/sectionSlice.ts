@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { addSection, getSections, Section } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
@@ -35,7 +35,12 @@ export const createSection = createAsyncThunk('section/create', async (section: 
 export const sectionSlice = createSlice({
   name: 'section',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentSection: (state, action: PayloadAction<string>) => {
+      const currentSection = state.sections.find((x) => x.id === action.payload)
+      return { ...state, currentSection }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchSections.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(fetchSections.fulfilled, (state, action) => {
@@ -54,4 +59,5 @@ export const sectionSlice = createSlice({
   },
 })
 
+export const { setCurrentSection } = sectionSlice.actions
 export const sectionSelector = (state: RootState) => state.section

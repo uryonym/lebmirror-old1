@@ -136,6 +136,7 @@ export const getPages = async (sectionId: string) => {
 
 export const addPage = async (page: Page) => {
   const collRef = collection(firebaseDb, 'pages').withConverter(pageConverter)
-  const doc = await addDoc(collRef, page)
-  return doc.id
+  const docRef = await addDoc(collRef, page)
+  const doc = await getDoc(docRef.withConverter(pageConverter))
+  return doc.data()
 }

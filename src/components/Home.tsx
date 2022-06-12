@@ -2,19 +2,20 @@ import { authSelector, logout } from '../features/authSlice'
 import { useAppDispatch, useSelector } from '../store'
 import { createNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
 import { Note, Page, Section } from '../lib/firestoreApi'
-import { createSection, fetchSections, sectionSelector } from '../features/sectionSlice'
-import { fetchPages, pageSelector } from '../features/pageSlice'
+import { createSection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
+import { createPage, fetchPages, pageSelector } from '../features/pageSlice'
 import { ChangeEvent, useState } from 'react'
 
 export const Home = () => {
   const dispatch = useAppDispatch()
   const { uid } = useSelector(authSelector)
   const { notes, currentNote } = useSelector(noteSelector)
-  const { sections } = useSelector(sectionSelector)
+  const { sections, currentSection } = useSelector(sectionSelector)
   const { pages } = useSelector(pageSelector)
 
   const [noteName, setNoteName] = useState('')
   const [sectionName, setSectionName] = useState('')
+  const [pageName, setPageName] = useState('')
 
   const handleFetchNotes = () => {
     dispatch(fetchNotes())
@@ -51,8 +52,23 @@ export const Home = () => {
     dispatch(createSection(data))
   }
 
-  const handleFetchPages = (sectionId: string) => {
+  const handleSelectSection = (sectionId: string) => {
+    dispatch(setCurrentSection(sectionId))
     dispatch(fetchPages(sectionId))
+  }
+
+  const handleInputPageName = (e: ChangeEvent<HTMLInputElement>) => {
+    setPageName(e.target.value)
+  }
+
+  const handleCreatePage = () => {
+    const data: Page = {
+      name: pageName,
+      content: '',
+      sectionId: currentSection.id,
+      createdAt: new Date(),
+    }
+    dispatch(createPage(data))
   }
 
   const handleLogout = () => {
@@ -91,13 +107,19 @@ export const Home = () => {
       <ul>
         {sections.map((section: Section) => (
           <li key={section.id}>
-            <a href='#' onClick={() => handleFetchPages(section.id)}>
+            <a href='#' onClick={() => handleSelectSection(section.id)}>
               {section.name}
             </a>
           </li>
         ))}
       </ul>
       <h2>ページ一覧</h2>
+      <div>
+        <input type='test' value={pageName} onChange={handleInputPageName} />
+        <button type='button' onClick={handleCreatePage}>
+          ページ作成
+        </button>
+      </div>
       <ul>
         {pages.map((page: Page) => (
           <li key={page.id}>
