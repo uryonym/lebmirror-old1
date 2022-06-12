@@ -1,18 +1,35 @@
-import { logout } from '../features/authSlice'
+import { authSelector, logout } from '../features/authSlice'
 import { useAppDispatch, useSelector } from '../store'
-import { fetchNotes, noteSelector } from '../features/noteSlice'
+import { createNote, fetchNotes, noteSelector } from '../features/noteSlice'
 import { Note, Page, Section } from '../lib/firestoreApi'
 import { fetchSections, sectionSelector } from '../features/sectionSlice'
 import { fetchPages, pageSelector } from '../features/pageSlice'
+import { ChangeEvent, useState } from 'react'
 
 export const Home = () => {
   const dispatch = useAppDispatch()
+  const { uid } = useSelector(authSelector)
   const { notes } = useSelector(noteSelector)
   const { sections } = useSelector(sectionSelector)
   const { pages } = useSelector(pageSelector)
 
+  const [noteNmae, setNoteName] = useState('')
+
   const handleFetchNotes = () => {
     dispatch(fetchNotes())
+  }
+
+  const handleInputNoteName = (e: ChangeEvent<HTMLInputElement>) => {
+    setNoteName(e.target.value)
+  }
+
+  const handleCreateNote = () => {
+    const data: Note = {
+      name: noteNmae,
+      uid,
+      createdAt: new Date(),
+    }
+    dispatch(createNote(data))
   }
 
   const handleFetchSections = (noteId: string) => {
@@ -34,6 +51,12 @@ export const Home = () => {
       <button type='button' onClick={handleFetchNotes}>
         ノート取得
       </button>
+      <div>
+        <input type='test' value={noteNmae} onChange={handleInputNoteName} />
+        <button type='button' onClick={handleCreateNote}>
+          ノート作成
+        </button>
+      </div>
       <ul>
         {notes.map((note: Note) => (
           <li key={note.id}>

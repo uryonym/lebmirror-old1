@@ -1,13 +1,15 @@
 import {
-  getDocs,
+  addDoc,
   collection,
-  query,
-  where,
-  FirestoreDataConverter,
   DocumentData,
+  FirestoreDataConverter,
+  getDoc,
+  getDocs,
+  query,
   QueryDocumentSnapshot,
   SnapshotOptions,
   Timestamp,
+  where,
 } from 'firebase/firestore'
 import { firebaseDb } from './firebase'
 
@@ -104,6 +106,13 @@ export const getNotes = async () => {
   return snapShot.docs.map((doc) => doc.data())
 }
 
+export const addNote = async (note: Note) => {
+  const collRef = collection(firebaseDb, 'notes').withConverter(noteConverter)
+  const docRef = await addDoc(collRef, note)
+  const doc = await getDoc(docRef.withConverter(noteConverter))
+  return doc.data()
+}
+
 export const getSections = async (noteId: string) => {
   const collRef = collection(firebaseDb, 'sections').withConverter(sectionConverter)
   const q = query(collRef, where('noteId', '==', noteId))
@@ -111,9 +120,21 @@ export const getSections = async (noteId: string) => {
   return snapShot.docs.map((doc) => doc.data())
 }
 
+export const addSection = async (section: Section) => {
+  const collRef = collection(firebaseDb, 'sections').withConverter(sectionConverter)
+  const doc = await addDoc(collRef, section)
+  return doc.id
+}
+
 export const getPages = async (sectionId: string) => {
   const collRef = collection(firebaseDb, 'pages').withConverter(pageConverter)
   const q = query(collRef, where('sectionId', '==', sectionId))
   const snapShot = await getDocs(q)
   return snapShot.docs.map((doc) => doc.data())
+}
+
+export const addPage = async (page: Page) => {
+  const collRef = collection(firebaseDb, 'pages').withConverter(pageConverter)
+  const doc = await addDoc(collRef, page)
+  return doc.id
 }

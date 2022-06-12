@@ -13,8 +13,9 @@ export const App = () => {
   const { authenticated } = useSelector(authSelector)
 
   const refresh = useCallback(
-    async (displayName, email) => {
+    async (uid, displayName, email) => {
       const userData = {
+        uid,
         displayName,
         email,
       }
@@ -32,7 +33,7 @@ export const App = () => {
           }
         }
         if (user && !authenticated) {
-          return await refresh(user.displayName, user.email)
+          return await refresh(user.uid, user.displayName, user.email)
         }
         if (!user && !authenticated) {
           if (location.pathname !== '/login') {
