@@ -5,6 +5,7 @@ import { Note, Page, Section } from '../lib/firestoreApi'
 import { changeSection, createSection, destroySection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
 import { changePage, createPage, destroyPage, fetchPages, pageSelector } from '../features/pageSlice'
 import { ChangeEvent, useState } from 'react'
+import LebEditor from './LebEditor'
 
 export const Home = () => {
   const dispatch = useAppDispatch()
@@ -19,6 +20,10 @@ export const Home = () => {
   const [renameSection, setRenameSection] = useState<Section>()
   const [pageName, setPageName] = useState('')
   const [renamePage, setRenamePage] = useState<Page>()
+
+  const handleLogout = () => {
+    dispatch(logout())
+  }
 
   const handleFetchNotes = () => {
     dispatch(fetchNotes())
@@ -140,13 +145,13 @@ export const Home = () => {
     dispatch(destroyPage(pageId))
   }
 
-  const handleLogout = () => {
-    dispatch(logout())
-  }
-
   return (
     <div>
       <h1>ホーム画面</h1>
+      <p>ログイン済の状態です。</p>
+      <button type='button' onClick={handleLogout}>
+        ログアウト
+      </button>
       <h2>ノート一覧</h2>
       <button type='button' onClick={handleFetchNotes}>
         ノート取得
@@ -247,10 +252,7 @@ export const Home = () => {
           </li>
         ))}
       </ul>
-      <p>ログイン済の状態です。</p>
-      <button type='button' onClick={handleLogout}>
-        ログアウト
-      </button>
+      <LebEditor />
     </div>
   )
 }
