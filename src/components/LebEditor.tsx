@@ -1,20 +1,34 @@
-import { DraftHandleValue, Editor, EditorState, RichUtils } from 'draft-js'
-import { useCallback, useState } from 'react'
-import 'draft-js/dist/Draft.css'
+import { useEffect, useRef } from 'react'
+import { EditorState } from 'prosemirror-state'
+import { EditorView } from 'prosemirror-view'
+import { schema } from 'prosemirror-schema-basic'
 
 const LebEditor = () => {
-  const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty())
+  const pmEditor = useRef<HTMLDivElement>(null)
 
-  const handleKeyCommand = useCallback((command: string, editorState: EditorState): DraftHandleValue => {
-    const newState = RichUtils.handleKeyCommand(editorState, command)
-    if (newState) {
-      setEditorState(newState)
-      return 'handled'
+  const createState = () => {
+    return EditorState.create({
+      schema,
+    })
+  }
+
+  const createView = () => {
+    if (!pmEditor.current) {
+      throw new Error('createView called before ref available')
     }
-    return 'not-handled'
+
+    return new EditorView(pmEditor.current, {
+      state: createState(),
+    })
+  }
+
+  useEffect(() => {
+    console.log('init editor')
+    console.log(pmEditor.current)
+    createView()
   }, [])
 
-  return <Editor editorState={editorState} onChange={setEditorState} handleKeyCommand={handleKeyCommand} />
+  return <div ref={pmEditor} />
 }
 
 export default LebEditor
