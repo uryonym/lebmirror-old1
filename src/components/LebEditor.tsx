@@ -10,6 +10,7 @@ export type LebEditorProps = {
 
 const LebEditor = (props: LebEditorProps) => {
   const pmEditor = useRef<HTMLDivElement>(null)
+  const pmView = useRef<EditorView>(null)
 
   const createState = (content?: string) => {
     const doc = defaultMarkdownParser.parse(content || '')
@@ -39,8 +40,18 @@ const LebEditor = (props: LebEditorProps) => {
   useEffect(() => {
     console.log('init editor')
     console.log(pmEditor.current)
-    createView()
+    pmView.current = createView()
   }, [])
+
+  useEffect(() => {
+    console.log('update content')
+    console.log(pmView.current)
+    console.log(props.content)
+    if (pmView.current && props.content) {
+      const newState = createState(props.content)
+      pmView.current.updateState(newState)
+    }
+  }, [props.content])
 
   return <div ref={pmEditor} />
 }
