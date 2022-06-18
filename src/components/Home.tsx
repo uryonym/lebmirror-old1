@@ -3,7 +3,7 @@ import { useAppDispatch, useSelector } from '../store'
 import { changeNote, createNote, destroyNote, fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
 import { Note, Page, Section } from '../lib/firestoreApi'
 import { changeSection, createSection, destroySection, fetchSections, sectionSelector, setCurrentSection } from '../features/sectionSlice'
-import { changePage, createPage, destroyPage, fetchPages, pageSelector } from '../features/pageSlice'
+import { changePage, createPage, destroyPage, fetchPages, pageSelector, setCurrentPage } from '../features/pageSlice'
 import { ChangeEvent, useState } from 'react'
 import LebEditor from './LebEditor'
 
@@ -136,6 +136,10 @@ export const Home = () => {
     setRenamePage(undefined)
   }
 
+  const handleSelectPage = (pageId: string) => {
+    dispatch(setCurrentPage(pageId))
+  }
+
   const handleUpdatePage = (pageId: string) => {
     const currentPage = pages.find((x) => x.id === pageId)
     setRenamePage(currentPage)
@@ -242,7 +246,9 @@ export const Home = () => {
       <ul>
         {pages.map((page: Page) => (
           <li key={page.id}>
-            <a href='#'>{page.name}</a>
+            <a href='#' onClick={() => handleSelectPage(page.id)}>
+              {page.name}
+            </a>
             <button type='button' onClick={() => handleUpdatePage(page.id)}>
               名前変更
             </button>

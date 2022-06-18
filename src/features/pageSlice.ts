@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { addPage, deletePage, getPages, Page, updatePage } from '../lib/firestoreApi'
 import { RootState } from '../store'
 
@@ -53,7 +53,12 @@ export const destroyPage = createAsyncThunk('page/destroy', async (pageId: strin
 export const pageSlice = createSlice({
   name: 'page',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentPage: (state, action: PayloadAction<string>) => {
+      const currentPage = state.pages.find((x) => x.id === action.payload)
+      return { ...state, currentPage }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchPages.pending, (state) => ({ ...state, status: 'loading' }))
     builder.addCase(fetchPages.fulfilled, (state, action) => {
@@ -86,4 +91,5 @@ export const pageSlice = createSlice({
   },
 })
 
+export const { setCurrentPage } = pageSlice.actions
 export const pageSelector = (state: RootState) => state.page
