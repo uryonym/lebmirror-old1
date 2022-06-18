@@ -37,12 +37,14 @@ const LebEditor = (props: LebEditorProps) => {
     return view
   }
 
+  // initial editor render
   useEffect(() => {
     console.log('init editor')
     console.log(pmEditor.current)
     pmView.current = createView()
   }, [])
 
+  // update content render
   useEffect(() => {
     console.log('update content')
     console.log(pmView.current)
