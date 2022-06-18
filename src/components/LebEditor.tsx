@@ -17,7 +17,7 @@ const LebEditor = (props: LebEditorProps) => {
 
     return EditorState.create({
       schema,
-      doc
+      doc,
     })
   }
 
@@ -55,7 +55,17 @@ const LebEditor = (props: LebEditorProps) => {
     }
   }, [props.content])
 
-  return <div ref={pmEditor} />
+  return (
+    <>
+      <div>
+        <button type='button'>保存</button>
+      </div>
+      <div
+        className='border border-gray-700 rounded'
+        ref={pmEditor}
+      />
+    </>
+  )
 }
 
 export default LebEditor

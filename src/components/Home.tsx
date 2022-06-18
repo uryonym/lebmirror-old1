@@ -153,11 +153,11 @@ export const Home = () => {
     <div>
       <h1>ホーム画面</h1>
       <p>ログイン済の状態です。</p>
-      <button type='button' onClick={handleLogout}>
+      <button type='button' className='basic-btn' onClick={handleLogout}>
         ログアウト
       </button>
       <h2>ノート一覧</h2>
-      <button type='button' onClick={handleFetchNotes}>
+      <button type='button' className='basic-btn' onClick={handleFetchNotes}>
         ノート取得
       </button>
       <div>
