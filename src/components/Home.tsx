@@ -12,7 +12,7 @@ export const Home = () => {
   const { uid } = useSelector(authSelector)
   const { notes, currentNote } = useSelector(noteSelector)
   const { sections, currentSection } = useSelector(sectionSelector)
-  const { pages } = useSelector(pageSelector)
+  const { pages, currentPage } = useSelector(pageSelector)
 
   const [noteName, setNoteName] = useState('')
   const [renameNote, setRenameNote] = useState<Note>()
@@ -252,7 +252,7 @@ export const Home = () => {
           </li>
         ))}
       </ul>
-      <LebEditor />
+      <LebEditor content={currentPage?.content} />
     </div>
   )
 }
