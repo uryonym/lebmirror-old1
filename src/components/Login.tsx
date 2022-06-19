@@ -12,9 +12,9 @@ export const Login = () => {
   }
 
   return (
-    <div>
+    <div className='container mx-auto'>
       <h1>ログイン画面</h1>
-      <button type='button' onClick={handleLogin}>
+      <button type='button' className='basic-btn' onClick={handleLogin}>
         Googleでログイン
       </button>
     </div>
