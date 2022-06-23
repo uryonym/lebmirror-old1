@@ -1,10 +1,11 @@
 import { useAppDispatch, useSelector } from './store'
 import { authSelector, login } from './features/authSlice'
-import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Login } from './components/Login'
 import { Home } from './components/Home'
 import { useCallback, useEffect } from 'react'
 import { firebaseAuth } from './lib/firebase'
+import { Header } from "./components/Header";
 
 export const App = () => {
   const dispatch = useAppDispatch()
@@ -47,8 +48,7 @@ export const App = () => {
 
   return (
     <>
-      <Link to='/'>Home</Link>
-      <Link to='/login'>Login</Link>
+      <Header />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='login' element={<Login />} />
