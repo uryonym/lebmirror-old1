@@ -147,12 +147,22 @@ export const Home = () => {
                   <a href='#' onClick={() => handleSelectSection(section.id)}>
                     {section.name}
                   </a>
-                  <button type='button' onClick={() => handleUpdateSection(section.id)}>
-                    名前変更
-                  </button>
-                  <button type='button' onClick={() => handleDeleteSection(section.id)}>
-                    削除
-                  </button>
+                  <div className='inline-flex rounded-md shadow-sm'>
+                    <button
+                      type='button'
+                      className='py-2 px-3 inline-flex justify-center items-center gap-2 -ml-px first:rounded-l-lg first:ml-0 last:rounded-r-lg border font-medium bg-white text-gray-700 align-middle hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-sm'
+                      onClick={() => handleUpdateSection(section.id)}
+                    >
+                      名前変更
+                    </button>
+                    <button
+                      type='button'
+                      className='py-2 px-3 inline-flex justify-center items-center gap-2 -ml-px first:rounded-l-lg first:ml-0 last:rounded-r-lg border font-medium bg-white text-gray-700 align-middle hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-sm'
+                      onClick={() => handleDeleteSection(section.id)}
+                    >
+                      削除
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -203,12 +213,22 @@ export const Home = () => {
                   <a href='#' onClick={() => handleSelectPage(page.id)}>
                     {page.name}
                   </a>
-                  <button type='button' onClick={() => handleUpdatePage(page.id)}>
-                    名前変更
-                  </button>
-                  <button type='button' onClick={() => handleDeletePage(page.id)}>
-                    削除
-                  </button>
+                  <div className='inline-flex rounded-md shadow-sm'>
+                    <button
+                      type='button'
+                      className='py-2 px-3 inline-flex justify-center items-center gap-2 -ml-px first:rounded-l-lg first:ml-0 last:rounded-r-lg border font-medium bg-white text-gray-700 align-middle hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-sm'
+                      onClick={() => handleUpdatePage(page.id)}
+                    >
+                      名前変更
+                    </button>
+                    <button
+                      type='button'
+                      className='py-2 px-3 inline-flex justify-center items-center gap-2 -ml-px first:rounded-l-lg first:ml-0 last:rounded-r-lg border font-medium bg-white text-gray-700 align-middle hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-sm'
+                      onClick={() => handleDeletePage(page.id)}
+                    >
+                      削除
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
