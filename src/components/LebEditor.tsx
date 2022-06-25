@@ -10,6 +10,12 @@ import { Text } from '../lib/nodes/Text'
 import { Paragraph } from '../lib/nodes/Paragraph'
 import { keymap } from 'prosemirror-keymap'
 import { baseKeymap } from 'prosemirror-commands'
+import { gapCursor } from 'prosemirror-gapcursor'
+import { dropCursor } from 'prosemirror-dropcursor'
+import { Blockquote } from '../lib/nodes/Blockquote'
+import { HorizontalRule } from '../lib/nodes/HorizontalRule'
+import { Heading } from '../lib/nodes/Heading'
+import { HardBreak } from '../lib/nodes/HardBreak'
 
 export type LebEditorProps = {
   content?: string
@@ -24,7 +30,15 @@ const LebEditor = (props: LebEditorProps) => {
   let schema: Schema
 
   const createExtensions = () => {
-    return new ExtensionManager([new Doc(), new Paragraph(), new Text()])
+    return new ExtensionManager([
+      new Doc(),
+      new Paragraph(),
+      new Blockquote(),
+      new HorizontalRule(),
+      new Heading(),
+      new Text(),
+      new HardBreak(),
+    ])
   }
 
   const createState = (content?: string) => {
@@ -33,7 +47,7 @@ const LebEditor = (props: LebEditorProps) => {
     return EditorState.create({
       schema,
       doc,
-      plugins: [keymap(baseKeymap)],
+      plugins: [dropCursor(), gapCursor(), keymap(baseKeymap)],
     })
   }
 
