@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
-import { marks } from 'prosemirror-schema-basic'
 import { defaultMarkdownParser } from 'prosemirror-markdown'
 import { ExtensionManager } from '../lib/ExtensionManager'
 import { Doc } from '../lib/nodes/Doc'
-import { NodeSpec, Schema } from 'prosemirror-model'
+import { MarkSpec, NodeSpec, Schema } from 'prosemirror-model'
 import { Text } from '../lib/nodes/Text'
 import { Paragraph } from '../lib/nodes/Paragraph'
 import { keymap } from 'prosemirror-keymap'
@@ -16,6 +15,10 @@ import { Blockquote } from '../lib/nodes/Blockquote'
 import { HorizontalRule } from '../lib/nodes/HorizontalRule'
 import { Heading } from '../lib/nodes/Heading'
 import { HardBreak } from '../lib/nodes/HardBreak'
+import { Link } from '../lib/marks/Link'
+import { Italic } from '../lib/marks/Italic'
+import { Bold } from '../lib/marks/Bold'
+import { Code } from '../lib/marks/Code'
 
 export type LebEditorProps = {
   content?: string
@@ -27,6 +30,7 @@ const LebEditor = (props: LebEditorProps) => {
 
   let extensions: ExtensionManager
   let nodes: { [name: string]: NodeSpec }
+  let marks: { [name: string]: MarkSpec }
   let schema: Schema
 
   const createExtensions = () => {
@@ -38,6 +42,10 @@ const LebEditor = (props: LebEditorProps) => {
       new Heading(),
       new Text(),
       new HardBreak(),
+      new Link(),
+      new Italic(),
+      new Bold(),
+      new Code(),
     ])
   }
 
@@ -71,6 +79,7 @@ const LebEditor = (props: LebEditorProps) => {
   useEffect(() => {
     extensions = createExtensions()
     nodes = extensions.nodes
+    marks = extensions.marks
     schema = new Schema({
       nodes,
       marks,
