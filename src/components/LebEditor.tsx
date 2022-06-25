@@ -1,8 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
-import { schema } from 'prosemirror-schema-basic'
+import { marks } from 'prosemirror-schema-basic'
 import { defaultMarkdownParser } from 'prosemirror-markdown'
+import { ExtensionManager } from '../lib/ExtensionManager'
+import { Doc } from '../lib/nodes/Doc'
+import { NodeSpec, Schema } from 'prosemirror-model'
+import { Text } from '../lib/nodes/Text'
+import { Paragraph } from '../lib/nodes/Paragraph'
+import { keymap } from 'prosemirror-keymap'
+import { baseKeymap } from 'prosemirror-commands'
 
 export type LebEditorProps = {
   content?: string
@@ -12,12 +19,21 @@ const LebEditor = (props: LebEditorProps) => {
   const pmEditor = useRef<HTMLDivElement>(null)
   const pmView = useRef<EditorView>(null)
 
+  let extensions: ExtensionManager
+  let nodes: { [name: string]: NodeSpec }
+  let schema: Schema
+
+  const createExtensions = () => {
+    return new ExtensionManager([new Doc(), new Paragraph(), new Text()])
+  }
+
   const createState = (content?: string) => {
     const doc = defaultMarkdownParser.parse(content || '')
 
     return EditorState.create({
       schema,
       doc,
+      plugins: [keymap(baseKeymap)],
     })
   }
 
@@ -39,16 +55,17 @@ const LebEditor = (props: LebEditorProps) => {
 
   // initial editor render
   useEffect(() => {
-    console.log('init editor')
-    console.log(pmEditor.current)
+    extensions = createExtensions()
+    nodes = extensions.nodes
+    schema = new Schema({
+      nodes,
+      marks,
+    })
     pmView.current = createView()
   }, [])
 
   // update content render
   useEffect(() => {
-    console.log('update content')
-    console.log(pmView.current)
-    console.log(props.content)
     if (pmView.current && props.content) {
       const newState = createState(props.content)
       pmView.current.updateState(newState)
@@ -60,10 +77,7 @@ const LebEditor = (props: LebEditorProps) => {
       <div>
         <button type='button'>保存</button>
       </div>
-      <div
-        className='border border-gray-700 rounded'
-        ref={pmEditor}
-      />
+      <div className='border border-gray-700 rounded' ref={pmEditor} />
     </>
   )
 }
