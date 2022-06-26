@@ -9,7 +9,7 @@ export class HorizontalRule extends Node {
     return {
       group: "block",
       parseDOM: [{tag: "hr"}],
-      toDom: () => ["hr"]
+      toDOM: () => ["hr"]
     }
   }
 }

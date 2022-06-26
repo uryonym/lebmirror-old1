@@ -23,7 +23,7 @@ export class Link extends Mark {
           },
         },
       ],
-      toDom: (node) => {
+      toDOM: (node) => {
         const { href, title } = node.attrs
         return ['a', { href, title }, 0]
       },
