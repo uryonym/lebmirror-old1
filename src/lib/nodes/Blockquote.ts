@@ -1,4 +1,5 @@
 import { Node } from './Node'
+import { wrappingInputRule } from 'prosemirror-inputrules'
 
 export class Blockquote extends Node {
   get name() {
@@ -13,5 +14,13 @@ export class Blockquote extends Node {
       parseDOM: [{ tag: 'blockquote' }],
       toDOM: () => ['blockquote', 0],
     }
+  }
+
+  parseMarkdown() {
+    return { block: 'blockquote' }
+  }
+
+  inputRules({ type }) {
+    return [wrappingInputRule(/^\s*>\s$/, type)]
   }
 }
