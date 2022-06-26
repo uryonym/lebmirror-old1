@@ -10,7 +10,11 @@ export class Paragraph extends Node {
       content: 'inline*',
       group: 'block',
       parseDOM: [{ tag: 'p' }],
-      toDom: () => ['p', 0],
+      toDOM: () => ['p', 0],
     }
+  }
+
+  parseMarkdown() {
+    return { block: 'paragraph' }
   }
 }

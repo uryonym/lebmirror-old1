@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
-import { defaultMarkdownParser } from 'prosemirror-markdown'
+import { MarkdownParser } from 'prosemirror-markdown'
 import { ExtensionManager } from '../lib/ExtensionManager'
 import { Doc } from '../lib/nodes/Doc'
-import { MarkSpec, NodeSpec, Schema } from 'prosemirror-model'
+import { Schema } from 'prosemirror-model'
 import { Text } from '../lib/nodes/Text'
 import { Paragraph } from '../lib/nodes/Paragraph'
 import { keymap } from 'prosemirror-keymap'
@@ -19,6 +19,8 @@ import { Link } from '../lib/marks/Link'
 import { Italic } from '../lib/marks/Italic'
 import { Bold } from '../lib/marks/Bold'
 import { Code } from '../lib/marks/Code'
+import { inputRules, InputRule } from 'prosemirror-inputrules'
+import 'prosemirror-view/style/prosemirror.css'
 
 export type LebEditorProps = {
   content?: string
@@ -27,11 +29,6 @@ export type LebEditorProps = {
 const LebEditor = (props: LebEditorProps) => {
   const pmEditor = useRef<HTMLDivElement>(null)
   const pmView = useRef<EditorView>(null)
-
-  let extensions: ExtensionManager
-  let nodes: { [name: string]: NodeSpec }
-  let marks: { [name: string]: MarkSpec }
-  let schema: Schema
 
   const createExtensions = () => {
     return new ExtensionManager([
@@ -50,12 +47,19 @@ const LebEditor = (props: LebEditorProps) => {
   }
 
   const createState = (content?: string) => {
-    const doc = defaultMarkdownParser.parse(content || '')
+    const doc = parser.parse(content || '')
 
     return EditorState.create({
       schema,
       doc,
-      plugins: [dropCursor(), gapCursor(), keymap(baseKeymap)],
+      plugins: [
+        dropCursor(),
+        gapCursor(),
+        inputRules({
+          rules,
+        }),
+        keymap(baseKeymap),
+      ],
     })
   }
 
@@ -77,13 +81,6 @@ const LebEditor = (props: LebEditorProps) => {
 
   // initial editor render
   useEffect(() => {
-    extensions = createExtensions()
-    nodes = extensions.nodes
-    marks = extensions.marks
-    schema = new Schema({
-      nodes,
-      marks,
-    })
     pmView.current = createView()
   }, [])
 
@@ -94,6 +91,25 @@ const LebEditor = (props: LebEditorProps) => {
       pmView.current.updateState(newState)
     }
   }, [props.content])
+
+  const extensions: ExtensionManager = useMemo(() => {
+    return createExtensions()
+  }, [])
+
+  const schema: Schema = useMemo(() => {
+    return new Schema({
+      nodes: extensions.nodes,
+      marks: extensions.marks,
+    })
+  }, [extensions.nodes, extensions.marks])
+
+  const parser: MarkdownParser = useMemo(() => {
+    return extensions.parser({ schema })
+  }, [schema])
+
+  const rules: InputRule[] = useMemo(() => {
+    return extensions.inputRules({ schema })
+  }, [schema])
 
   return (
     <>

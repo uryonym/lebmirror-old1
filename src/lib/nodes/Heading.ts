@@ -1,6 +1,14 @@
 import { Node } from './Node'
+import { NodeType } from 'prosemirror-model'
+import { textblockTypeInputRule } from 'prosemirror-inputrules'
 
 export class Heading extends Node {
+  get defaultOptions() {
+    return {
+      levels: [1, 2, 3, 4],
+    }
+  }
+
   get name() {
     return 'heading'
   }
@@ -13,15 +21,26 @@ export class Heading extends Node {
       content: 'inline*',
       group: 'block',
       defining: true,
-      parseDOM: [
-        { tag: 'h1', attrs: { level: 1 } },
-        { tag: 'h2', attrs: { level: 2 } },
-        { tag: 'h3', attrs: { level: 3 } },
-        { tag: 'h4', attrs: { level: 4 } },
-        { tag: 'h5', attrs: { level: 5 } },
-        { tag: 'h6', attrs: { level: 6 } },
-      ],
-      toDOM: (node) => ['h' + node.attrs.level, 0],
+      parseDOM: this.options.levels.map((level) => ({
+        tag: `h${level}`,
+        attrs: { level },
+      })),
+      toDOM: (node) => [`h${node.attrs.level}`, 0],
     }
+  }
+
+  parseMarkdown() {
+    return {
+      block: 'heading',
+      getAttrs: (tok) => ({ level: +tok.tag.slice(1) }),
+    }
+  }
+
+  inputRules({ type }: { type: NodeType }) {
+    return this.options.levels.map((level) =>
+      textblockTypeInputRule(new RegExp(`^(#{1,${level}})\\s$`), type, () => ({
+        level,
+      })),
+    )
   }
 }

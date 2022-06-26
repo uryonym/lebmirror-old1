@@ -6,4 +6,12 @@ export abstract class Node extends Extension {
   }
 
   abstract get schema()
+
+  get markdownToken(): string {
+    return ''
+  }
+
+  parseMarkdown() {
+    return
+  }
 }
