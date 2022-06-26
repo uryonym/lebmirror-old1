@@ -41,6 +41,8 @@ export class ExtensionManager {
       .filter((extension) => extension.type === 'mark' || extension.type === 'node')
       .reduce((nodes, extension: Node | Mark) => {
         const md = extension.parseMarkdown()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if (!md) return nodes
 
         return {

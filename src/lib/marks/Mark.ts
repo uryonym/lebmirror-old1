@@ -12,6 +12,6 @@ export abstract class Mark extends Extension {
   }
 
   parseMarkdown() {
-    return {}
+    return
   }
 }
