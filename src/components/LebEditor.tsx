@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
-import { MarkdownParser } from 'prosemirror-markdown'
+import { MarkdownParser, MarkdownSerializer } from 'prosemirror-markdown'
 import { ExtensionManager } from '../lib/ExtensionManager'
 import { Doc } from '../lib/nodes/Doc'
 import { Schema } from 'prosemirror-model'
@@ -20,11 +20,11 @@ import { Italic } from '../lib/marks/Italic'
 import { Bold } from '../lib/marks/Bold'
 import { Code } from '../lib/marks/Code'
 import { inputRules, InputRule } from 'prosemirror-inputrules'
-import 'prosemirror-view/style/prosemirror.css'
 import { BulletList } from '../lib/nodes/BulletList'
 import { ListItem } from '../lib/nodes/ListItem'
 import { OrderedList } from '../lib/nodes/OrderedList'
 import { History } from '../lib/plugins/History'
+import 'prosemirror-view/style/prosemirror.css'
 
 export type LebEditorProps = {
   content?: string
@@ -113,6 +113,10 @@ const LebEditor = (props: LebEditorProps) => {
     })
   }, [extensions.nodes, extensions.marks])
 
+  const serializer: MarkdownSerializer = useMemo(() => {
+    return extensions.serializer()
+  }, [])
+
   const parser: MarkdownParser = useMemo(() => {
     return extensions.parser({ schema })
   }, [schema])
@@ -128,6 +132,10 @@ const LebEditor = (props: LebEditorProps) => {
   const rules: InputRule[] = useMemo(() => {
     return extensions.inputRules({ schema })
   }, [schema])
+
+  const value: string = useMemo(() => {
+    return serializer.serialize(pmView.current.state.doc)
+  }, [serializer])
 
   return (
     <>

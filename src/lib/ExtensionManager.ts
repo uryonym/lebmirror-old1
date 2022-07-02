@@ -3,7 +3,7 @@ import { Extension } from './Extension'
 import { Node } from './nodes/Node'
 import { Mark } from './marks/Mark'
 import { Schema } from 'prosemirror-model'
-import { MarkdownParser } from 'prosemirror-markdown'
+import { MarkdownParser, MarkdownSerializer } from 'prosemirror-markdown'
 import { keymap } from 'prosemirror-keymap'
 
 export class ExtensionManager {
@@ -41,6 +41,30 @@ export class ExtensionManager {
     return this.extensions
       .filter((extension) => 'plugins' in extension)
       .reduce((allPlugins, { plugins }) => [...allPlugins, ...plugins], [])
+  }
+
+  serializer() {
+    const nodes = this.extensions
+      .filter((extension) => extension.type === 'node')
+      .reduce(
+        (nodes, extension: Node) => ({
+          ...nodes,
+          [extension.name]: extension.toMarkdown,
+        }),
+        {},
+      )
+
+    const marks = this.extensions
+      .filter((extension) => extension.type === 'mark')
+      .reduce(
+        (marks, extension: Mark) => ({
+          ...marks,
+          [extension.name]: extension.toMarkdown,
+        }),
+        {},
+      )
+
+    return new MarkdownSerializer(nodes, marks)
   }
 
   parser({ schema }: { schema: Schema }): MarkdownParser {

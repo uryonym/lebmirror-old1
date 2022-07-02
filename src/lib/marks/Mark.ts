@@ -11,6 +11,10 @@ export abstract class Mark extends Extension {
     return ''
   }
 
+  get toMarkdown(): Record<string, any> {
+    return {}
+  }
+
   parseMarkdown() {
     return
   }
