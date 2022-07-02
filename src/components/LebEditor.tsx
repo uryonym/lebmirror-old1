@@ -15,6 +15,7 @@ import { Blockquote } from '../lib/nodes/Blockquote'
 import { HorizontalRule } from '../lib/nodes/HorizontalRule'
 import { Heading } from '../lib/nodes/Heading'
 import { HardBreak } from '../lib/nodes/HardBreak'
+import { CodeBlock } from '../lib/nodes/CodeBlock'
 import { Link } from '../lib/marks/Link'
 import { Italic } from '../lib/marks/Italic'
 import { Bold } from '../lib/marks/Bold'
@@ -39,6 +40,7 @@ const LebEditor = (props: LebEditorProps) => {
       new Doc(),
       new Paragraph(),
       new Blockquote(),
+      new CodeBlock(),
       new HorizontalRule(),
       new Heading(),
       new Text(),
