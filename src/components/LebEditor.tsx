@@ -2,30 +2,36 @@ import { useEffect, useMemo, useRef } from 'react'
 import { EditorState } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { MarkdownParser, MarkdownSerializer } from 'prosemirror-markdown'
-import { ExtensionManager } from '../lib/ExtensionManager'
-import { Doc } from '../lib/nodes/Doc'
 import { Schema } from 'prosemirror-model'
-import { Text } from '../lib/nodes/Text'
-import { Paragraph } from '../lib/nodes/Paragraph'
 import { keymap } from 'prosemirror-keymap'
 import { baseKeymap } from 'prosemirror-commands'
 import { gapCursor } from 'prosemirror-gapcursor'
 import { dropCursor } from 'prosemirror-dropcursor'
-import { Blockquote } from '../lib/nodes/Blockquote'
-import { HorizontalRule } from '../lib/nodes/HorizontalRule'
+import { inputRules, InputRule } from 'prosemirror-inputrules'
+import { ExtensionManager } from '../lib/ExtensionManager'
+import 'prosemirror-view/style/prosemirror.css'
+
+//nodes
+import { Doc } from '../lib/nodes/Doc'
+import { Text } from '../lib/nodes/Text'
+import { Paragraph } from '../lib/nodes/Paragraph'
 import { Heading } from '../lib/nodes/Heading'
 import { HardBreak } from '../lib/nodes/HardBreak'
+import { HorizontalRule } from '../lib/nodes/HorizontalRule'
+import { Blockquote } from '../lib/nodes/Blockquote'
+import { BulletList } from '../lib/nodes/BulletList'
+import { ListItem } from '../lib/nodes/ListItem'
+import { OrderedList } from '../lib/nodes/OrderedList'
 import { CodeBlock } from '../lib/nodes/CodeBlock'
+
+//marks
 import { Link } from '../lib/marks/Link'
 import { Italic } from '../lib/marks/Italic'
 import { Bold } from '../lib/marks/Bold'
 import { Code } from '../lib/marks/Code'
-import { inputRules, InputRule } from 'prosemirror-inputrules'
-import { BulletList } from '../lib/nodes/BulletList'
-import { ListItem } from '../lib/nodes/ListItem'
-import { OrderedList } from '../lib/nodes/OrderedList'
+
+//plugins
 import { History } from '../lib/plugins/History'
-import 'prosemirror-view/style/prosemirror.css'
 
 export type LebEditorProps = {
   content?: string
