@@ -24,6 +24,7 @@ import 'prosemirror-view/style/prosemirror.css'
 import { BulletList } from '../lib/nodes/BulletList'
 import { ListItem } from '../lib/nodes/ListItem'
 import { OrderedList } from '../lib/nodes/OrderedList'
+import { History } from '../lib/plugins/History'
 
 export type LebEditorProps = {
   content?: string
@@ -49,6 +50,7 @@ const LebEditor = (props: LebEditorProps) => {
       new Italic(),
       new Bold(),
       new Code(),
+      new History(),
     ])
   }
 
@@ -59,6 +61,8 @@ const LebEditor = (props: LebEditorProps) => {
       schema,
       doc,
       plugins: [
+        ...plugins,
+        ...keymaps,
         dropCursor(),
         gapCursor(),
         inputRules({
@@ -111,6 +115,14 @@ const LebEditor = (props: LebEditorProps) => {
 
   const parser: MarkdownParser = useMemo(() => {
     return extensions.parser({ schema })
+  }, [schema])
+
+  const plugins = useMemo(() => {
+    return extensions.plugins
+  }, [])
+
+  const keymaps = useMemo(() => {
+    return extensions.keymaps({ schema })
   }, [schema])
 
   const rules: InputRule[] = useMemo(() => {

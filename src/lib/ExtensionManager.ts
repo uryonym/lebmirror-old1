@@ -4,6 +4,7 @@ import { Node } from './nodes/Node'
 import { Mark } from './marks/Mark'
 import { Schema } from 'prosemirror-model'
 import { MarkdownParser } from 'prosemirror-markdown'
+import { keymap } from 'prosemirror-keymap'
 
 export class ExtensionManager {
   extensions: Extension[]
@@ -36,6 +37,12 @@ export class ExtensionManager {
       )
   }
 
+  get plugins() {
+    return this.extensions
+      .filter((extension) => 'plugins' in extension)
+      .reduce((allPlugins, { plugins }) => [...allPlugins, ...plugins], [])
+  }
+
   parser({ schema }: { schema: Schema }): MarkdownParser {
     const tokens: Record<string, any> = this.extensions
       .filter((extension) => extension.type === 'mark' || extension.type === 'node')
@@ -53,6 +60,25 @@ export class ExtensionManager {
     console.log(tokens)
 
     return new MarkdownParser(schema, markdownit('commonmark', { html: false }), tokens)
+  }
+
+  keymaps({ schema }: { schema: Schema }) {
+    const extensionKeymaps = this.extensions
+      .filter((extension) => ['extension'].includes(extension.type))
+      .filter((extension) => extension.keys)
+      .map((extension) => extension.keys({ schema }))
+
+    const nodeMarkKeymaps = this.extensions
+      .filter((extension) => ['node', 'mark'].includes(extension.type))
+      .filter((extension) => extension.keys)
+      .map((extension) =>
+        extension.keys({
+          type: schema[`${extension.type}s`][extension.name],
+          schema,
+        }),
+      )
+
+    return [...extensionKeymaps, ...nodeMarkKeymaps].map((keys: Record<string, any>) => keymap(keys))
   }
 
   inputRules({ schema }: { schema: Schema }) {
