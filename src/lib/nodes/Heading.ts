@@ -1,6 +1,7 @@
 import { Node } from './Node'
-import { NodeType } from 'prosemirror-model'
+import { Node as PMNode, NodeType } from 'prosemirror-model'
 import { textblockTypeInputRule } from 'prosemirror-inputrules'
+import { MarkdownSerializerState } from 'prosemirror-markdown'
 
 export class Heading extends Node {
   get defaultOptions() {
@@ -27,6 +28,12 @@ export class Heading extends Node {
       })),
       toDOM: (node) => [`h${node.attrs.level}`, 0],
     }
+  }
+
+  toMarkdown(state: MarkdownSerializerState, node: PMNode) {
+    state.write(state.repeat('#', node.attrs.level) + ' ')
+    state.renderInline(node)
+    state.closeBlock(node)
   }
 
   parseMarkdown() {

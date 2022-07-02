@@ -1,4 +1,6 @@
 import { Node } from './Node'
+import { Node as PMNode } from 'prosemirror-model'
+import { MarkdownSerializerState } from 'prosemirror-markdown'
 
 export class Text extends Node {
   get name() {
@@ -9,5 +11,9 @@ export class Text extends Node {
     return {
       group: 'inline',
     }
+  }
+
+  toMarkdown(state: MarkdownSerializerState, node: PMNode) {
+    state.text(node.text)
   }
 }

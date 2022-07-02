@@ -133,14 +133,16 @@ const LebEditor = (props: LebEditorProps) => {
     return extensions.inputRules({ schema })
   }, [schema])
 
-  const value: string = useMemo(() => {
-    return serializer.serialize(pmView.current.state.doc)
-  }, [serializer])
+  const handleClickSave = () => {
+    console.log(serializer.serialize(pmView.current.state.doc))
+  }
 
   return (
     <>
       <div>
-        <button type='button'>保存</button>
+        <button type='button' onClick={handleClickSave}>
+          保存
+        </button>
       </div>
       <div className='border border-gray-700 rounded' ref={pmEditor} />
     </>
