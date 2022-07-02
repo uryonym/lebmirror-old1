@@ -21,6 +21,9 @@ import { Bold } from '../lib/marks/Bold'
 import { Code } from '../lib/marks/Code'
 import { inputRules, InputRule } from 'prosemirror-inputrules'
 import 'prosemirror-view/style/prosemirror.css'
+import { BulletList } from '../lib/nodes/BulletList'
+import { ListItem } from '../lib/nodes/ListItem'
+import { OrderedList } from '../lib/nodes/OrderedList'
 
 export type LebEditorProps = {
   content?: string
@@ -38,6 +41,9 @@ const LebEditor = (props: LebEditorProps) => {
       new HorizontalRule(),
       new Heading(),
       new Text(),
+      new BulletList(),
+      new OrderedList(),
+      new ListItem(),
       new HardBreak(),
       new Link(),
       new Italic(),
