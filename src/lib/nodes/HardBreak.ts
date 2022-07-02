@@ -2,7 +2,7 @@ import { Node } from './Node'
 
 export class HardBreak extends Node {
   get name() {
-    return 'hard_break'
+    return 'br'
   }
 
   get schema() {
@@ -13,5 +13,9 @@ export class HardBreak extends Node {
       parseDOM: [{ tag: 'br' }],
       toDOM: () => ['br'],
     }
+  }
+
+  parseMarkdown() {
+    return { node: 'br' }
   }
 }

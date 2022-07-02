@@ -11,4 +11,8 @@ export class Italic extends Mark {
       toDOM: () => ['em'],
     }
   }
+
+  parseMarkdown() {
+    return { mark: 'em' }
+  }
 }

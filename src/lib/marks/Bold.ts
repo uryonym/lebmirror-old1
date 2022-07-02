@@ -11,4 +11,8 @@ export class Bold extends Mark {
       toDOM: () => ['strong'],
     }
   }
+
+  parseMarkdown() {
+    return { mark: 'strong' }
+  }
 }
