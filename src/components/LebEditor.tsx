@@ -148,7 +148,7 @@ const LebEditor = (props: LebEditorProps) => {
   return (
     <>
       <div>
-        <button type='button' onClick={handleClickSave}>
+        <button type='button' className='basic-btn' onClick={handleClickSave}>
           保存
         </button>
       </div>

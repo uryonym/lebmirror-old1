@@ -7,7 +7,10 @@ import {
   FirestoreDataConverter,
   getDoc,
   getDocs,
+  getDocsFromCache,
+  getDocsFromServer,
   query,
+  QuerySnapshot,
   QueryDocumentSnapshot,
   SnapshotOptions,
   Timestamp,
@@ -105,7 +108,15 @@ const pageConverter: FirestoreDataConverter<Page> = {
 
 export const getNotes = async () => {
   const collRef = collection(firebaseDb, 'notes').withConverter(noteConverter)
-  const snapShot = await getDocs(collRef)
+  let snapShot: QuerySnapshot<Note>
+  try {
+    // まずはcacheからデータを取得する
+    snapShot = await getDocsFromCache(collRef)
+  } catch (e) {
+    // エラーの場合、serverから取得する
+    snapShot = await getDocsFromServer(collRef)
+  }
+
   return snapShot.docs.map((doc) => doc.data())
 }
 
