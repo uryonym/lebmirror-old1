@@ -5,7 +5,8 @@ import { Login } from './components/Login'
 import { Home } from './components/Home'
 import { useCallback, useEffect } from 'react'
 import { firebaseAuth } from './lib/firebase'
-import { Header } from "./components/Header";
+import { Header } from './components/Header'
+import { Stack, StackItem } from '@fluentui/react'
 
 export const App = () => {
   const dispatch = useAppDispatch()
@@ -47,12 +48,14 @@ export const App = () => {
   })
 
   return (
-    <>
+    <Stack styles={{ root: { height: '100vh' } }}>
       <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='login' element={<Login />} />
-      </Routes>
-    </>
+      <StackItem grow>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='login' element={<Login />} />
+        </Routes>
+      </StackItem>
+    </Stack>
   )
 }

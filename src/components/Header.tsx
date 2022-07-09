@@ -1,6 +1,7 @@
 import { SelectNote } from './SelectNote'
 import { useAppDispatch, useSelector } from '../store'
 import { authSelector, logout } from '../features/authSlice'
+import { DefaultPalette, Stack, Text } from '@fluentui/react'
 
 export const Header = () => {
   const dispatch = useAppDispatch()
@@ -10,10 +11,21 @@ export const Header = () => {
     dispatch(logout())
   }
 
+  const headerStyle = {
+    root: {
+      backgroundColor: DefaultPalette.themePrimary,
+      height: 50,
+      padding: '0 32px',
+      color: DefaultPalette.white,
+    },
+  }
+
   return (
-    <header className='flex flex-nowrap justify-start w-full bg-gray-800 text-sm py-3'>
+    <Stack horizontal verticalAlign='center' styles={headerStyle}>
+      <Text variant='large' styles={{ root: { color: DefaultPalette.white } }}>
+        lebmirror
+      </Text>
       <nav className='flex items-center justify-between w-full mx-auto px-4'>
-        <span className='text-xl font-semibold text-white'>lebmirror</span>
         {authenticated && (
           <>
             <SelectNote />
@@ -28,6 +40,6 @@ export const Header = () => {
           </>
         )}
       </nav>
-    </header>
+    </Stack>
   )
 }
