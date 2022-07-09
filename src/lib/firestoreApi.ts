@@ -16,6 +16,7 @@ import {
   Timestamp,
   updateDoc,
   where,
+  snapshotEqual,
 } from 'firebase/firestore'
 import { firebaseDb } from './firebase'
 
@@ -109,11 +110,8 @@ const pageConverter: FirestoreDataConverter<Page> = {
 export const getNotes = async () => {
   const collRef = collection(firebaseDb, 'notes').withConverter(noteConverter)
   let snapShot: QuerySnapshot<Note>
-  try {
-    // まずはcacheからデータを取得する
-    snapShot = await getDocsFromCache(collRef)
-  } catch (e) {
-    // エラーの場合、serverから取得する
+  snapShot = await getDocsFromCache(collRef)
+  if (snapShot.empty) {
     snapShot = await getDocsFromServer(collRef)
   }
 

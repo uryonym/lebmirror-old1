@@ -1,6 +1,6 @@
 import { useAppDispatch } from '../store'
 import { login } from '../features/authSlice'
-import { DefaultButton, Stack, StackItem } from '@fluentui/react'
+import { Stack, Box, Button } from '@mui/material'
 
 export const Login = () => {
   const dispatch = useAppDispatch()
@@ -13,10 +13,12 @@ export const Login = () => {
   }
 
   return (
-    <Stack verticalAlign='center' styles={{ root: { height: '100%' } }}>
-      <StackItem align='center'>
-        <DefaultButton onClick={handleLogin}>Googleでログイン</DefaultButton>
-      </StackItem>
+    <Stack>
+      <Box>
+        <Button variant='contained' onClick={handleLogin}>
+          Googleでログイン
+        </Button>
+      </Box>
     </Stack>
   )
 }

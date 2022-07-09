@@ -1,12 +1,11 @@
-import { useAppDispatch, useSelector } from './store'
-import { authSelector, login } from './features/authSlice'
+import { useCallback, useEffect } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { useAppDispatch, useSelector } from './store'
+import { firebaseAuth } from './lib/firebase'
+import { authSelector, login } from './features/authSlice'
+import { Header } from './components/Header'
 import { Login } from './components/Login'
 import { Home } from './components/Home'
-import { useCallback, useEffect } from 'react'
-import { firebaseAuth } from './lib/firebase'
-import { Header } from './components/Header'
-import { Stack, StackItem } from '@fluentui/react'
 
 export const App = () => {
   const dispatch = useAppDispatch()
@@ -48,14 +47,12 @@ export const App = () => {
   })
 
   return (
-    <Stack styles={{ root: { height: '100vh' } }}>
+    <>
       <Header />
-      <StackItem grow>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='login' element={<Login />} />
-        </Routes>
-      </StackItem>
-    </Stack>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='login' element={<Login />} />
+      </Routes>
+    </>
   )
 }

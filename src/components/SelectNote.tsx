@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useAppDispatch, useSelector } from '../store'
 import { fetchNotes, noteSelector, setCurrentNote } from '../features/noteSlice'
 import { fetchSections } from '../features/sectionSlice'
-import { Dropdown, IDropdownOption } from '@fluentui/react'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 
 export const SelectNote = () => {
   const dispatch = useAppDispatch()
@@ -12,18 +12,21 @@ export const SelectNote = () => {
     dispatch(fetchNotes())
   }, [])
 
-  const options: IDropdownOption[] = useMemo(() => {
-    return notes.map((note) => {
-      return { key: note.id, text: note.name }
-    })
-  }, [notes])
-
-  const handleSelectNote = (_e, option: IDropdownOption) => {
-    if (typeof option.key === 'string') {
-      dispatch(setCurrentNote(option.key))
-      dispatch(fetchSections(option.key))
-    }
+  const handleSelectNote = (e) => {
+    dispatch(setCurrentNote(e.target.value))
+    dispatch(fetchSections(e.target.value))
   }
 
-  return <Dropdown placeholder='ノートを選択' dropdownWidth='auto' onChange={handleSelectNote} options={options} />
+  return (
+    <FormControl fullWidth>
+      <InputLabel id='selectNote'>ノートを選択</InputLabel>
+      <Select labelId='selectNote' label='ノートを選択' onChange={handleSelectNote} autoWidth>
+        {notes.map((note) => (
+          <MenuItem key={note.id} value={note.id}>
+            {note.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
 }

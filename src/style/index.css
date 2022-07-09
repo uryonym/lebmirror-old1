@@ -1,27 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-h1 {
-  @apply text-3xl mt-1.5 mb-3
-}
-
-h2 {
-  @apply text-2xl mt-1.5 mb-3
-}
-
 [contenteditable] {
   outline-width: 0;
-}
-
-.basic-btn {
-  @apply py-2 px-4 inline-flex justify-center items-center gap-2 rounded-md bg-blue-100 border border-transparent font-semibold text-blue-500 hover:text-white hover:bg-blue-500 transition-all text-sm;
-}
-
-.outline-btn {
-  @apply py-2 px-4 inline-flex justify-center items-center gap-2 rounded-md border-2 border-blue-200 font-semibold text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 transition-all text-sm;
-}
-
-.list-btn {
-  @apply inline-flex items-center gap-x-2 py-2 px-3 text-sm font-medium border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg hover:text-blue-600
 }
