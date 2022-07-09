@@ -1,6 +1,6 @@
 import { useAppDispatch } from '../store'
 import { login } from '../features/authSlice'
-import { DefaultButton, IStackStyles, Stack, StackItem } from '@fluentui/react'
+import { DefaultButton, Stack, StackItem } from '@fluentui/react'
 
 export const Login = () => {
   const dispatch = useAppDispatch()

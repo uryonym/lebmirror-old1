@@ -1,7 +1,7 @@
 import { SelectNote } from './SelectNote'
 import { useAppDispatch, useSelector } from '../store'
 import { authSelector, logout } from '../features/authSlice'
-import { DefaultPalette, Stack, Text } from '@fluentui/react'
+import { DefaultPalette, ILinkStyles, IStackStyles, IStackTokens, Link, Stack, StackItem, Text } from '@fluentui/react'
 
 export const Header = () => {
   const dispatch = useAppDispatch()
@@ -11,35 +11,46 @@ export const Header = () => {
     dispatch(logout())
   }
 
-  const headerStyle = {
+  const headerStyle: IStackStyles = {
     root: {
       backgroundColor: DefaultPalette.themePrimary,
       height: 50,
       padding: '0 32px',
+    },
+  }
+
+  const headerToken: IStackTokens = {
+    childrenGap: 16,
+  }
+
+  const linkStyle: ILinkStyles = {
+    root: {
       color: DefaultPalette.white,
+      selectors: {
+        ':hover': {
+          color: DefaultPalette.whiteTranslucent40,
+          textDecoration: 'none',
+        },
+      },
     },
   }
 
   return (
-    <Stack horizontal verticalAlign='center' styles={headerStyle}>
+    <Stack horizontal verticalAlign='center' styles={headerStyle} tokens={headerToken}>
       <Text variant='large' styles={{ root: { color: DefaultPalette.white } }}>
         lebmirror
       </Text>
-      <nav className='flex items-center justify-between w-full mx-auto px-4'>
-        {authenticated && (
-          <>
-            <SelectNote />
-            <div>
-              <button type='button' className='font-medium text-gray-400 hover:text-gray-500 mr-3' onClick={handleLogout}>
-                Create Note
-              </button>
-              <button type='button' className='font-medium text-gray-400 hover:text-gray-500' onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          </>
-        )}
-      </nav>
+      {authenticated && (
+        <>
+          <SelectNote />
+          <Link onClick={handleLogout} styles={linkStyle}>
+            ノート作成
+          </Link>
+          <Link onClick={handleLogout} styles={linkStyle}>
+            ログアウト
+          </Link>
+        </>
+      )}
     </Stack>
   )
 }
