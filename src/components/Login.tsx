@@ -13,7 +13,7 @@ export const Login = () => {
   }
 
   return (
-    <Stack>
+    <Stack sx={{ flexGrow: 1 }} alignItems='center' justifyContent='center'>
       <Box>
         <Button variant='contained' onClick={handleLogin}>
           Googleでログイン

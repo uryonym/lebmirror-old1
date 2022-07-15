@@ -6,6 +6,7 @@ import { authSelector, login } from './features/authSlice'
 import { Header } from './components/Header'
 import { Login } from './components/Login'
 import { Home } from './components/Home'
+import { CssBaseline, Stack } from '@mui/material'
 
 export const App = () => {
   const dispatch = useAppDispatch()
@@ -47,12 +48,13 @@ export const App = () => {
   })
 
   return (
-    <>
+    <Stack height='100vh'>
+      <CssBaseline />
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='login' element={<Login />} />
       </Routes>
-    </>
+    </Stack>
   )
 }

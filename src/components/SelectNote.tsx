@@ -18,9 +18,9 @@ export const SelectNote = () => {
   }
 
   return (
-    <FormControl fullWidth>
+    <FormControl sx={{ minWidth: 200 }} size='small'>
       <InputLabel id='selectNote'>ノートを選択</InputLabel>
-      <Select labelId='selectNote' label='ノートを選択' onChange={handleSelectNote} autoWidth>
+      <Select labelId='selectNote' value={''} label='ノートを選択' onChange={handleSelectNote} autoWidth>
         {notes.map((note) => (
           <MenuItem key={note.id} value={note.id}>
             {note.name}
