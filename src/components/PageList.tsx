@@ -1,20 +1,14 @@
-import { useAppDispatch, useSelector } from '../store'
-import { noteSelector } from '../features/noteSlice'
 import { Page } from '../lib/firestoreApi'
+import { ChangeEvent, useState } from 'react'
+import { useAppDispatch, useSelector } from '../store'
 import { sectionSelector } from '../features/sectionSlice'
 import { changePage, createPage, destroyPage, pageSelector, setCurrentPage } from '../features/pageSlice'
-import { ChangeEvent, useState } from 'react'
-import LebEditor from './LebEditor'
-import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex'
-import { SectionList } from './SectionList'
-import { PageList } from './PageList'
+import { Stack, Typography, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 
-export const Home = () => {
+export const PageList = () => {
   const dispatch = useAppDispatch()
-  const { currentNote } = useSelector(noteSelector)
   const { currentSection } = useSelector(sectionSelector)
-  const { pages, currentPage } = useSelector(pageSelector)
-
+  const { pages } = useSelector(pageSelector)
   const [pageName, setPageName] = useState('')
   const [renamePage, setRenamePage] = useState<Page>()
 
@@ -59,23 +53,20 @@ export const Home = () => {
     dispatch(destroyPage(pageId))
   }
 
-  if (currentNote) {
-    return (
-      <ReflexContainer orientation='vertical'>
-        <ReflexElement size={200} minSize={50}>
-          <SectionList />
-        </ReflexElement>
-        <ReflexSplitter />
-        <ReflexElement size={200} minSize={50}>
-          <PageList />
-        </ReflexElement>
-        <ReflexSplitter />
-        <ReflexElement>
-          <LebEditor content={currentPage?.content} />
-        </ReflexElement>
-      </ReflexContainer>
-    )
-  } else {
-    return <p>ノートを選択してください。</p>
-  }
+  return (
+    <Stack>
+      <Typography variant='subtitle1' p={1}>
+        ページ
+      </Typography>
+      <List dense disablePadding>
+        {pages.map((page: Page) => (
+          <ListItem key={page.id} disablePadding divider>
+            <ListItemButton onClick={() => handleSelectPage(page.id)}>
+              <ListItemText>{page.name}</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Stack>
+  )
 }
