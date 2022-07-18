@@ -9,6 +9,7 @@ import { gapCursor } from 'prosemirror-gapcursor'
 import { dropCursor } from 'prosemirror-dropcursor'
 import { inputRules, InputRule } from 'prosemirror-inputrules'
 import { ExtensionManager } from '../lib/ExtensionManager'
+import { Box, Button } from '@mui/material'
 import 'prosemirror-view/style/prosemirror.css'
 
 //nodes
@@ -147,12 +148,12 @@ const LebEditor = (props: LebEditorProps) => {
 
   return (
     <>
-      <div>
-        <button type='button' className='basic-btn' onClick={handleClickSave}>
+      <Box p={1}>
+        <Button variant='outlined' size='small' onClick={handleClickSave}>
           保存
-        </button>
-      </div>
-      <div className='border border-gray-700 rounded' ref={pmEditor} />
+        </Button>
+      </Box>
+      <Box ref={pmEditor} />
     </>
   )
 }
